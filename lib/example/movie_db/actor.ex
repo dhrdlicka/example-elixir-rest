@@ -9,7 +9,7 @@ defmodule Example.MovieDB.Actor do
     field :nationality, :string
     field :birthday, :date
 
-    many_to_many :movies, MovieDB.Movies, join_through: MovieDB.MovieActor
+    many_to_many :movies, MovieDB.Movie, join_through: MovieDB.MovieActor
 
     timestamps()
   end
