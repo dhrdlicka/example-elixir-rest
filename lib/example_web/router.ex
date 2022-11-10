@@ -6,6 +6,9 @@ defmodule ExampleWeb.Router do
   end
 
   scope "/api", ExampleWeb do
+    resources "/actors", ActorController, except: [:new, :edit]
+    resources "/movies", MovieController, except: [:new, :edit]
+    resources "/reviews", ReviewController, except: [:new, :edit]
     pipe_through :api
   end
 
