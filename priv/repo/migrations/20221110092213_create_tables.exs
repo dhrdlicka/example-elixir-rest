@@ -25,14 +25,14 @@ defmodule Example.Repo.Migrations.CreateMovies do
       add :stars, :integer
       add :date, :utc_datetime
 
-      add :movie_id, references(:movies)
+      add :movie_id, references(:movies, on_delete: :delete_all)
 
       timestamps()
     end
 
     create table(:movie_actors) do
-      add :movie_id, references(:movies)
-      add :actor_id, references(:actors)
+      add :movie_id, references(:movies, on_delete: :delete_all)
+      add :actor_id, references(:actors, on_delete: :delete_all)
 
       timestamps()
     end
