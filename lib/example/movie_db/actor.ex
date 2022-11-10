@@ -7,9 +7,9 @@ defmodule Example.MovieDB.Actor do
   schema "actors" do
     field :name, :string
     field :nationality, :string
+    field :birthday, :date
 
-    has_many :actor_movies, MovieDB.MovieActor
-    has_many :movies, through: [:actor_movies, :movie]
+    many_to_many :movies, MovieDB.Movies, join_through: MovieDB.MovieActor
 
     timestamps()
   end

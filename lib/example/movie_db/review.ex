@@ -6,8 +6,9 @@ defmodule Example.MovieDB.Review do
 
   schema "reviews" do
     field :author, :string
-    field :content, :string
+    field :date, :utc_datetime
     field :stars, :integer
+    field :content, :string
 
     belongs_to :movie, MovieDB.Movie
 

@@ -4,7 +4,7 @@ defmodule Example.MovieDB.MovieActor do
 
   alias Example.MovieDB
 
-  schema "actors" do
+  schema "movie_actors" do
     belongs_to :actor, MovieDB.Actor
     belongs_to :movie, MovieDB.Movie
 

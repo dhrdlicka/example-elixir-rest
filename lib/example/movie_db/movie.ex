@@ -10,8 +10,7 @@ defmodule Example.MovieDB.Movie do
     field :director, :string
     field :year, :integer
 
-    has_many :movie_actors, MovieDB.MovieActor
-    has_many :actors, through: [:movie_actors, :actor]
+    many_to_many :actors, MovieDB.Actor, join_through: MovieDB.MovieActor
 
     has_many :reviews, MovieDB.Review
 
