@@ -6,7 +6,9 @@ defmodule Example.MovieDB do
   import Ecto.Query, warn: false
   alias Example.Repo
 
+  alias Example.MovieDB.Actor
   alias Example.MovieDB.Movie
+  alias Example.MovieDB.Review
 
   @doc """
   Returns the list of movies.
@@ -19,6 +21,21 @@ defmodule Example.MovieDB do
   """
   def list_movies do
     Repo.all(Movie)
+  end
+
+  @doc """
+  Returns the list of movies with a given actor.
+
+  ## Examples
+
+      iex> list_actor_movies(actor_id)
+      [%Movie{}, ...]
+
+  """
+  def list_actor_movies(actor_id) do
+    Repo.get(Actor, actor_id)
+    |> Repo.preload(:movies)
+    |> Map.get(:movies)
   end
 
   @doc """
@@ -102,8 +119,6 @@ defmodule Example.MovieDB do
     Movie.changeset(movie, attrs)
   end
 
-  alias Example.MovieDB.Actor
-
   @doc """
   Returns the list of actors.
 
@@ -115,6 +130,21 @@ defmodule Example.MovieDB do
   """
   def list_actors do
     Repo.all(Actor)
+  end
+
+  @doc """
+  Returns the list of actors in a movie.
+
+  ## Examples
+
+      iex> list_movie_actors(movie_id)
+      [%Actor{}, ...]
+
+  """
+  def list_movie_actors(movie_id) do
+    Repo.get(Movie, movie_id)
+    |> Repo.preload(:actors)
+    |> Map.get(:actors)
   end
 
   @doc """
@@ -198,8 +228,6 @@ defmodule Example.MovieDB do
     Actor.changeset(actor, attrs)
   end
 
-  alias Example.MovieDB.Review
-
   @doc """
   Returns the list of reviews.
 
@@ -211,6 +239,21 @@ defmodule Example.MovieDB do
   """
   def list_reviews do
     Repo.all(Review)
+  end
+
+  @doc """
+  Returns the list of reviews for a movie.
+
+  ## Examples
+
+      iex> list_movie_reviews(movie_id)
+      [%Review{}, ...]
+
+  """
+  def list_movie_reviews(movie_id) do
+    Repo.get(Movie, movie_id)
+    |> Repo.preload(:reviews)
+    |> Map.get(:reviews)
   end
 
   @doc """

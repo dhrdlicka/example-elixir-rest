@@ -11,6 +11,11 @@ defmodule ExampleWeb.ReviewController do
     render(conn, "index.json", reviews: reviews)
   end
 
+  def movie_index(conn, %{"movie_id" => movie_id}) do
+    reviews = MovieDB.list_movie_reviews(movie_id)
+    render(conn, "index.json", reviews: reviews)
+  end
+
   def create(conn, %{"review" => review_params}) do
     with {:ok, %Review{} = review} <- MovieDB.create_review(review_params) do
       conn

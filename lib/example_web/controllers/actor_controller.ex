@@ -11,6 +11,11 @@ defmodule ExampleWeb.ActorController do
     render(conn, "index.json", actors: actors)
   end
 
+  def movie_index(conn, %{"movie_id" => movie_id}) do
+    actors = MovieDB.list_movie_actors(movie_id)
+    render(conn, "index.json", actors: actors)
+  end
+
   def create(conn, %{"actor" => actor_params}) do
     with {:ok, %Actor{} = actor} <- MovieDB.create_actor(actor_params) do
       conn
