@@ -8,7 +8,27 @@ defmodule Example.MovieDB do
 
   alias Example.MovieDB.Actor
   alias Example.MovieDB.Movie
+  alias Example.MovieDB.MovieActor
   alias Example.MovieDB.Review
+
+  defp filter_movies(movies, params) do
+    movies = case params do
+      %{"year" => year} -> movies |> where([m], m.year == ^year)
+      _ -> movies
+    end
+
+    movies = case params do
+      %{"title" => title} -> movies |> where([m], like(m.title, ^"%#{String.replace(title, "%", "\\%")}%"))
+      _ -> movies
+    end
+
+    movies = case params do
+      %{"genre" => genre} -> movies |> where([m], like(m.genre, ^"%#{String.replace(genre, "%", "\\%")}%"))
+      _ -> movies
+    end
+
+    movies
+  end
 
   @doc """
   Returns the list of movies.
@@ -19,8 +39,10 @@ defmodule Example.MovieDB do
       [%Movie{}, ...]
 
   """
-  def list_movies do
-    Repo.all(Movie)
+  def list_movies(params = %{}) do
+    Movie
+    |> filter_movies(params)
+    |> Repo.all
   end
 
   @doc """
@@ -32,10 +54,12 @@ defmodule Example.MovieDB do
       [%Movie{}, ...]
 
   """
-  def list_actor_movies(actor_id) do
-    Repo.get(Actor, actor_id)
-    |> Repo.preload(:movies)
-    |> Map.get(:movies)
+  def list_actor_movies(actor_id, params = %{}) do
+    Movie
+    |> join(:inner, [m], ma in MovieActor, on: m.id == ma.movie_id)
+    |> where([_, ma], ma.actor_id == ^actor_id)
+    |> filter_movies(params)
+    |> Repo.all
   end
 
   @doc """
@@ -119,6 +143,20 @@ defmodule Example.MovieDB do
     Movie.changeset(movie, attrs)
   end
 
+  defp filter_actors(actors, params = %{}) do
+    actors = case params do
+      %{"name" => name} -> actors |> where([a], like(a.name, ^"%#{String.replace(name, "%", "\\%")}%"))
+      _ -> actors
+    end
+
+    actors = case params do
+      %{"nationality" => nationality} -> actors |> where([a], like(a.nationality, ^"%#{String.replace(nationality, "%", "\\%")}%"))
+      _ -> actors
+    end
+
+    actors
+  end
+
   @doc """
   Returns the list of actors.
 
@@ -128,8 +166,10 @@ defmodule Example.MovieDB do
       [%Actor{}, ...]
 
   """
-  def list_actors do
-    Repo.all(Actor)
+  def list_actors(params = %{}) do
+    Actor
+    |> filter_actors(params)
+    |> Repo.all
   end
 
   @doc """
@@ -141,10 +181,12 @@ defmodule Example.MovieDB do
       [%Actor{}, ...]
 
   """
-  def list_movie_actors(movie_id) do
-    Repo.get(Movie, movie_id)
-    |> Repo.preload(:actors)
-    |> Map.get(:actors)
+  def list_movie_actors(movie_id, params = %{}) do
+    Actor
+    |> join(:inner, [a], ma in MovieActor, on: a.id == ma.actor_id)
+    |> where([_, ma], ma.movie_id == ^movie_id)
+    |> filter_actors(params)
+    |> Repo.all
   end
 
   @doc """
@@ -228,6 +270,20 @@ defmodule Example.MovieDB do
     Actor.changeset(actor, attrs)
   end
 
+  defp filter_reviews(reviews, params = %{}) do
+    reviews = case params do
+      %{"stars" => stars} -> reviews |> where([r], r.stars == ^stars)
+      _ -> reviews
+    end
+
+    reviews = case params do
+      %{"author" => author} -> reviews |> where([r], like(r.author, ^"%#{String.replace(author, "%", "\\%")}%"))
+      _ -> reviews
+    end
+
+    reviews
+  end
+
   @doc """
   Returns the list of reviews.
 
@@ -237,8 +293,10 @@ defmodule Example.MovieDB do
       [%Review{}, ...]
 
   """
-  def list_reviews do
-    Repo.all(Review)
+  def list_reviews(params = %{}) do
+    Review
+    |> filter_reviews(params)
+    |> Repo.all
   end
 
   @doc """
@@ -250,10 +308,11 @@ defmodule Example.MovieDB do
       [%Review{}, ...]
 
   """
-  def list_movie_reviews(movie_id) do
-    Repo.get(Movie, movie_id)
-    |> Repo.preload(:reviews)
-    |> Map.get(:reviews)
+  def list_movie_reviews(movie_id, params = %{}) do
+    Review
+    |> where([r], r.movie_id == ^movie_id)
+    |> filter_reviews(params)
+    |> Repo.all
   end
 
   @doc """

@@ -6,13 +6,13 @@ defmodule ExampleWeb.ActorController do
 
   action_fallback ExampleWeb.FallbackController
 
-  def index(conn, _params) do
-    actors = MovieDB.list_actors()
+  def index(conn, params) do
+    actors = MovieDB.list_actors(params)
     render(conn, "index.json", actors: actors)
   end
 
-  def movie_index(conn, %{"movie_id" => movie_id}) do
-    actors = MovieDB.list_movie_actors(movie_id)
+  def movie_index(conn, %{"movie_id" => movie_id} = params) do
+    actors = MovieDB.list_movie_actors(movie_id, params)
     render(conn, "index.json", actors: actors)
   end
 

@@ -6,13 +6,13 @@ defmodule ExampleWeb.ReviewController do
 
   action_fallback ExampleWeb.FallbackController
 
-  def index(conn, _params) do
-    reviews = MovieDB.list_reviews()
+  def index(conn, params) do
+    reviews = MovieDB.list_reviews(params)
     render(conn, "index.json", reviews: reviews)
   end
 
-  def movie_index(conn, %{"movie_id" => movie_id}) do
-    reviews = MovieDB.list_movie_reviews(movie_id)
+  def movie_index(conn, %{"movie_id" => movie_id} = params) do
+    reviews = MovieDB.list_movie_reviews(movie_id, params)
     render(conn, "index.json", reviews: reviews)
   end
 
